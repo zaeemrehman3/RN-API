@@ -1,15 +1,22 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet ,ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const GET_API = () => {
 
   const [myData, setMyData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://192.168.2.183:3000/users')
-      .then((result) => setMyData(result.data))
-      .catch((error) => console.log(error));
+    axios.get('http://10.0.2.2/users')
+      .then((result) => {
+        setMyData(result.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("API Error:", error);
+        setLoading(false);
+      });
   }, []);
 
   const renderItem = ({ item }) => (
@@ -19,11 +26,19 @@ const GET_API = () => {
     </View>
   );
 
+  if(loading){
+    return(
+      <View style={styles.loader} >
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
         data={myData}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
       />
     </View>
@@ -49,5 +64,11 @@ const styles = StyleSheet.create({
   email: {
     fontSize: 14,
     color: 'gray',
-  }
+  },
+
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
