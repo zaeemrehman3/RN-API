@@ -1,14 +1,14 @@
-import { View, Text, FlatList, StyleSheet ,ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet ,ActivityIndicator, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const GET_API = () => {
 
-  const [myData, setMyData] = useState([]);
+  const [myData, setMyData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://10.0.2.2/users')
+    axios.get('https://fakestoreapi.com/products')
       .then((result) => {
         setMyData(result.data);
         setLoading(false);
@@ -21,8 +21,13 @@ const GET_API = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.email}>{item.email}</Text>
+    <Text style={styles.email}>{item.id}</Text>
+    <Image source={{uri:item.image}} width={50} height={50} />
+    <Text style={styles.name}>{item.title}</Text>
+    <Text style={styles.email}>{item.description}</Text>
+    <Text style={styles.email}>{item.category}</Text>
+    <Text style={styles.email}>${item.rating.rate}</Text>
+    <Text style={styles.email}>{item.rating.count}</Text>
     </View>
   );
 
